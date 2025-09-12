@@ -4,7 +4,6 @@
 #include "Freenove_WS2812B_RGBLED_Controller.h"
 
 
-
 void initFreeDrive() {
   pinMode(LED_BUILTIN, OUTPUT);
 }
@@ -21,23 +20,15 @@ void loopFreeDrive() {
   proccessChannel12();
   proccessChannel3();
   proccessChannel4();
-  //proccessChannel5();
-  //proccessChannel6();
 
   delay(10);
 }
 
-void proccessChannel12(){
+void proccessChannel12() {
   int channel1Value = map(receiver.get(1), 1000, 2000, -1 * RRFreenove4WDCarDriver::MAX_TURN_VALUE, RRFreenove4WDCarDriver::MAX_TURN_VALUE);
   int channel2Value = map(receiver.get(2), 1000, 2000, -1 * RRFreenove4WDCarDriver::MAX_SPEED, RRFreenove4WDCarDriver::MAX_SPEED);
 
-  //Serial.print("channel1Value: ");
-  //Serial.print(String(channel1Value));
-  //Serial.print('\t');
-  //Serial.print("channel2Value: ");
-  //Serial.print(String(channel2Value));
-  //Serial.print('\t');
-  
+ 
   if (abs(channel2Value) > 0) {
     //moveLeds(channel2Value, channel1Value);
     if (channel2Value > 0) {
@@ -53,7 +44,7 @@ void proccessChannel12(){
         driver.backwardLeft(abs(channel2Value), abs(channel1Value));
       }
     }
-  } else if (abs(channel1Value) >= RRFreenove4WDCarDriver::MAX_TURN_VALUE) {    
+  } else if (abs(channel1Value) >= RRFreenove4WDCarDriver::MAX_TURN_VALUE) {
     if (channel1Value > 0) {
       driver.rotateRight(abs(channel1Value));
     } else {
@@ -66,15 +57,15 @@ void proccessChannel12(){
   //Serial.println('\t');
 }
 
-void proccessChannel3(){
+void proccessChannel3() {
   int channelValue = receiver.get(3);
   int value = map(channelValue, 1000, 2000, 0, 3000);
   //Serial.println("Channel3 - " + String(channelValue) + "; map - " + String(value));
-  if(value < 150){
+  if (value < 150) {
     noTone(A0);
-  }else {
+  } else {
     tone(A0, value);
-  }  
+  }
 }
 
 void proccessChannel4() {
@@ -88,15 +79,3 @@ void proccessChannel4() {
   }
   servo.setPosition(position);
 }
-/*
-void proccessChannel5(){
-  int channelValue = receiver.get(5);
-  Serial.println("Channel5 - " + String(channelValue));
-}
-
-void proccessChannel6(){
-  int channelValue = receiver.get(6);
-  Serial.println("Channel6 - " + String(channelValue));
-}
-
-*/
