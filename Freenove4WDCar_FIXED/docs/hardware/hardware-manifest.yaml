@@ -1,0 +1,59 @@
+schema_version: 1
+project:
+  name: Freenove4WDCar_FIXED
+  repository: RomanRainov/Arduino-My-Sketches
+  branch: main
+  path: Freenove4WDCar_FIXED
+  sketch_path: Freenove4WDCar_FIXED/FlySky_4WDCar_COMPLEX
+  framework: Arduino
+  target_fqbn: arduino:avr:uno
+board:
+  name: Arduino Uno
+  mcu: ATmega328P
+  cpu_clock_hz: 16000000
+  logic_voltage_v: 5.0
+pins:
+  D0: {role: flysky_ibus_rx, interface: UART, reserved: true}
+  D1: {role: flysky_ibus_tx, interface: UART, reserved: true}
+  D2: {role: servo_signal, direction: OUTPUT, reserved: true}
+  D3: {role: motor_direction_right, direction: OUTPUT, reserved: true}
+  D4: {role: motor_direction_left, direction: OUTPUT, reserved: true}
+  D5: {role: motor_pwm_right, interface: PWM, timer: Timer0, reserved: true}
+  D6: {role: motor_pwm_left, interface: PWM, timer: Timer0, reserved: true}
+  D7: {role: ultrasonic_trig, direction: OUTPUT, reserved: true}
+  D8: {role: ultrasonic_echo, direction: INPUT, reserved: true}
+  D13: {role: serial_activity_led, also: SPI_SCK, reserved: true}
+  A0: {roles: [battery_adc, buzzer_tone], multiplexed: true, reserved: true, conflict: true}
+  A4: {role: i2c_sda, reserved: true}
+  A5: {role: i2c_scl, reserved: true}
+interfaces:
+  uart:
+    serial0: {pins: [D0, D1], owner: FlySky_iBus}
+  i2c:
+    bus0: {pins: [A4, A5], devices: [rgb_led_controller_0x20]}
+  pwm:
+    motor_right: {pin: D5, timer: Timer0}
+    motor_left: {pin: D6, timer: Timer0}
+  timers:
+    Timer0: {owners: [millis_delay, motor_pwm_D5_D6]}
+    Timer1: {owners: [Servo_library]}
+    Timer2: {owners: [tone_buzzer_when_active]}
+components:
+  flysky_ibus: {status: active, serial_object: Serial, exact_receiver: UNKNOWN}
+  motor_driver: {status: active, library: RR_Freenove4WDCar_Driver, physical_ic: UNKNOWN}
+  servo: {status: active, pin: D2, exact_model: UNKNOWN}
+  ultrasonic: {status: active, model: HC-SR04, trig: D7, echo: D8}
+  battery_measurement: {status: active, pin: A0, divider_ratio_assumed_by_code: 4}
+  buzzer: {status: active, pin: A0}
+  rgb_led_controller: {status: active, i2c_address: 0x20, led_count: 10, order: GRB}
+known_conflicts:
+  - "Serial/iBus vs Serial debug"
+  - "D13 activity LED vs SPI SCK"
+  - "A0 battery ADC vs buzzer/tone"
+  - "Servo/Timer1 vs PWM D9/D10"
+  - "tone()/Timer2 vs RR_Freenove4WDCar_TurnSignal Timer2"
+source_priority:
+  - "Freenove4WDCar_FIXED/FlySky_4WDCar_COMPLEX"
+  - "Freenove4WDCar_FIXED/Libraries"
+  - "RomanRainov/RR_Arduino_Libraries"
+  - "official Freenove / Arduino / datasheets"
