@@ -1,0 +1,42 @@
+schema_version: 1
+project:
+  name: FlySky_4WDCar_COMPLEX
+  repository: RomanRainov/Arduino-My-Sketches
+  branch: main
+  path: FlySky_4WDCar_COMPLEX
+  framework: Arduino
+  target_fqbn: arduino:avr:uno
+board:
+  mcu: ATmega328P
+  cpu_clock_hz: 16000000
+  logic_voltage_v: 5.0
+pins:
+  D0: {role: flysky_ibus_rx, interface: UART, reserved: true}
+  D1: {role: flysky_ibus_tx, interface: UART, reserved: true}
+  D2: {role: servo_signal, direction: OUTPUT, reserved: true}
+  D3: {role: motor_direction_right, direction: OUTPUT, reserved: true}
+  D4: {role: motor_direction_left, direction: OUTPUT, reserved: true}
+  D5: {role: motor_pwm_right, interface: PWM, reserved: true}
+  D6: {role: motor_pwm_left, interface: PWM, reserved: true}
+  D7: {role: ultrasonic_trig, direction: OUTPUT, reserved: true}
+  D8: {role: ultrasonic_echo, direction: INPUT, reserved: true}
+  D13: {role: serial_activity_led, also: SPI_SCK, reserved: true}
+  A0: {roles: [battery_adc, buzzer], multiplexed: true, reserved: true}
+  A4: {role: i2c_sda, reserved: true}
+  A5: {role: i2c_scl, reserved: true}
+components:
+  flysky_ibus: {status: active, serial_object: Serial, exact_receiver: UNKNOWN}
+  motor_driver: {status: active, library: RR_Freenove4WDCar_Driver}
+  servo: {status: active, pin: D2, exact_model: UNKNOWN}
+  ultrasonic: {status: active_in_modes, model: HC-SR04, trig: D7, echo: D8}
+  buzzer: {status: active, pin: A0}
+  rgb_led_controller: {status: active, i2c_address: 0x20, led_count: 10}
+known_conflicts:
+  - "Serial/iBus vs any Serial debug"
+  - "D13 LED_BUILTIN vs SPI SCK"
+  - "A0 battery vs buzzer multiplex"
+  - "Servo Timer1 vs PWM D9/D10"
+repository_drift:
+  - "driver.setAllLedsColor() called by sketch but absent in current RR Driver header"
+  - "buzzer.toneOn() called by sketch but absent in current RR Buzzer header"
+  - "sonar.setup() not called in main"

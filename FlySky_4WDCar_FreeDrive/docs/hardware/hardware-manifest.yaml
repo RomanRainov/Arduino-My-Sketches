@@ -1,0 +1,28 @@
+schema_version: 1
+project:
+  name: FlySky_4WDCar_FreeDrive
+  repository: RomanRainov/Arduino-My-Sketches
+  branch: main
+  path: FlySky_4WDCar_FreeDrive
+  target_fqbn: arduino:avr:uno
+board: {mcu: ATmega328P, cpu_clock_hz: 16000000, logic_voltage_v: 5.0}
+pins:
+  D0: {role: flysky_ibus_rx, interface: UART, reserved: true}
+  D1: {role: flysky_ibus_tx, interface: UART, reserved: true}
+  D2: {role: servo_signal, reserved: true}
+  D3: {role: motor_direction_right, reserved: true}
+  D4: {role: motor_direction_left, reserved: true}
+  D5: {role: motor_pwm_right, interface: PWM, reserved: true}
+  D6: {role: motor_pwm_left, interface: PWM, reserved: true}
+  D13: {role: serial_activity_led, also: SPI_SCK, reserved: true}
+  A0: {role: battery_pin_passed_to_driver, reserved: true}
+  A4: {role: i2c_sda_via_driver, reserved: true}
+  A5: {role: i2c_scl_via_driver, reserved: true}
+components:
+  flysky_ibus: {status: active, serial_object: Serial}
+  motor_driver: {status: active}
+  servo: {status: active}
+  rgb_led_controller: {status: active_indirectly_via_driver, i2c_address: 0x20}
+confirmed_conflicts:
+  - "active Serial.print/println in setup vs iBus ownership of Serial"
+  - "D13 activity LED vs SPI SCK"
