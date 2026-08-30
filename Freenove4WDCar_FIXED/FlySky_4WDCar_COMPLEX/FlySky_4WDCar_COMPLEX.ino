@@ -126,6 +126,7 @@ void setup() {
   receiver.begin();
   driver.setup();
   servo.setup();
+  sonar.setup();
 
   currentMode = CarMode::FreeDrive;
   initFreeDrive();
@@ -147,6 +148,10 @@ void loop() {
 
   // 2) If mode changed → run init and indicate
   if (desired != currentMode) {
+    // Stop the previous mode before blocking sound/LED indication.
+    driver.stop();
+    buzzer.off();
+
     currentMode = desired;
 
     switch (currentMode) {
